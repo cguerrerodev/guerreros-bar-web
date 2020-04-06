@@ -1,7 +1,8 @@
 
-import React, { Component } from 'react'
-import axios from 'axios'
+import React, { Component } from 'react';
 import Modal from 'react-bootstrap/Modal';
+import {connect} from 'react-redux';
+import {fetchItems} from '../../store/actions/itemActions'
 
 class Item extends Component {
 
@@ -23,7 +24,7 @@ class Item extends Component {
 
         this.props.addItemFunction(
             {
-                item : this.state.items[this.state.itemId], 
+                item : this.props.items[this.state.itemId], 
                 quantity : this.state.quantity            
             }
         );
@@ -31,47 +32,24 @@ class Item extends Component {
     }
 
     componentDidMount(){
-        axios
-        ('http://localhost:3001/api/items', {
-            method: 'GET',
-            headers: {
-              'content-type': 'application/json',
-            }
-          })
-
-        .then(response => {
-            // handle success
-            let items = [];
-            
-            response.data.forEach(item => {
-
-                items[item.id] = item;
-                
-            })
-
-            this.setState({
-                items
-            });
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          })
-          .finally(function () {
-            // always executed
-          });
-
+    
+        this.props.fetchItems();
     }
 
     render(){
 
         let options = [];
 
-        this.state.items.forEach(item => {
+        if (this.props.items){
 
-            options.push(<option key = {item.id} value = {item.id}>{item.name}</option>);
-            
-        })
+            this.props.items.forEach(item => {
+
+                options.push(<option key = {item.id} value = {item.id}>{item.name}</option>);
+                
+            })
+
+        }
+
 
         return (
 
@@ -97,7 +75,7 @@ class Item extends Component {
                         <label htmlFor="itemId">Item</label>
 
                         <select id = "itemId" onChange = {this.handleChange}
-                            defaultValue = {this.state.item?this.state.item.id:""} 
+                            defaultValue = {this.props.item?this.props.item.id:""} 
                             placeholder="Item"
                             className = "form-control" >
 
@@ -134,4 +112,18 @@ class Item extends Component {
 
 }
 
-export default Item;
+
+const mapStateToProps = (state) => {
+    return {items : state.item.items}
+    
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchItems: () => dispatch(fetchItems())
+    }
+    
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Item);

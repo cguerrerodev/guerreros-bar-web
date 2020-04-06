@@ -1,62 +1,40 @@
 
 import React, { Component } from 'react'
-import axios from 'axios'
+import {connect} from 'react-redux'
+import {fetchInventory} from '../../store/actions/inventoryActions'
+
+
 
 class Inventory extends Component {
-
-    state = {
-        items : []
-    }
-
+    
     componentDidMount(){
-        let items = [];
 
-        axios
-        ('http://localhost:3001/api/items', {
-            method: 'GET',
-            headers: {
-              'content-type': 'application/json',
-            }
-          })
-
-        .then(response => {
-            // handle success
-            response.data.forEach(item => {
-                items.push(item);
-            })
-
-            this.setState({items});
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error);
-          })
-          .finally(function () {
-            // always executed
-            
-          });
-
+        this.props.fetchInventory();
           
     }
 
-
-
     render(){
+       
 
         let rows = [];
         
-        this.state.items.forEach((item, i) => {
-            rows.push(
-                <tr key = {i}>
-                    <td>{item.id}</td>
-                    <td>{item.name}</td>
-                    <td>{item.created}</td>
-                    <td></td>
-                    <td>{item.mesurementUnitId}</td>
-                </tr>
-            )
-        });
-        
+        if (this.props.inventory.inventory 
+            && this.props.inventory.inventory.items){
+
+            this.props.inventory.inventory.items.forEach((item, i) => {
+                rows.push(
+                    <tr key = {i}>
+                        <td>{item.id}</td>
+                        <td>{item.name}</td>
+                        <td>{item.created}</td>
+                        <td>{item.quantity}</td>
+                        <td>{item.mesurementUnitId}</td>
+                    </tr>
+                )
+            });
+        }
+
+
         return (
 
             <div className="card">
@@ -102,4 +80,18 @@ class Inventory extends Component {
 
 }
 
-export default Inventory;
+
+const mapStateToProps = (state) => {
+    return {inventory : state.inventory}
+    
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchInventory: () => dispatch(fetchInventory())
+    }
+    
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Inventory);
