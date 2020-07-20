@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import PurchaseItemList from './PurchaseItemList';
-import ItemSelect from '../item/ItemSelect';
+import AddItemModalDialog from '../item/AddItemModalDialog';
 import axios from 'axios';
 
 class Purchase extends Component {
@@ -133,7 +133,7 @@ class Purchase extends Component {
                         <button id = "cancelButton" className="btn btn-primary"  >Cancel</button>
                 </div>
 
-                <ItemSelect addItemFunction = {this.addItem} 
+                <AddItemModalDialog addItemFunction = {this.addItem} 
                     show={this.state.modalAddItemVisible} onHide={this.closeAddItemModal} 
                     />
 

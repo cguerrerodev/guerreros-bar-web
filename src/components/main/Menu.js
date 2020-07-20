@@ -13,6 +13,7 @@ function Menu() {
 
       <Nav className="mr-auto">
         <Nav.Link href="#home">Home</Nav.Link>
+        <Nav.Link href="/local">Local</Nav.Link>
         <Nav.Link href="/purchase">Purchase</Nav.Link>
         <Nav.Link href="/inventory">Inventory</Nav.Link>
       </Nav>
